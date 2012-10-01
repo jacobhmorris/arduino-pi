@@ -29,6 +29,7 @@ while 1:
  
 
     data = conn.recv(1024)
+    print data;
     reply = 'OK...' + data
 
     if not data:
