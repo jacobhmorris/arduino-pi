@@ -57,8 +57,19 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				if(!connected){
 					connected = true;
+					 while(connected){
+				        	try{
+				        		
+					    		RCSocket rcSocket = new RCSocket("10.1.1.109", 8889);
+					    		rcSocket.sendValues(255,255,1,1);
+					    	}catch(IOException ioEx){
+					    		System.out.println("ERROR: "+ioEx.getMessage());
+					    		connected = false;
+					    	}
+				        }
+			        	/*
 					 Thread cThread = new Thread(new ClientThread());
-		 		     cThread.start();
+		 		     cThread.start();*/
 				}else{
 					connected= false;
 				}
@@ -72,17 +83,7 @@ public class MainActivity extends Activity {
 	  public class ClientThread implements Runnable {
 		 
 	        public void run() {
-	        while(connected){
-	        	try{
-	        		
-		    		RCSocket rcSocket = new RCSocket("10.1.1.10", 8889);
-		    		rcSocket.sendValues(122,211,1,1);
-		    	}catch(IOException ioEx){
-		    		System.out.println("ERROR: "+ioEx.getMessage());
-		    		connected = false;
-		    	}
-	        }
-        	
+	       
 	        	
 	        }
 	    }
