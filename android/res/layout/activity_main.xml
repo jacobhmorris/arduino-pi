@@ -1,0 +1,39 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/doConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Button" />
+
+    <FrameLayout
+        android:id="@+id/circleLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_below="@+id/doConnect"
+        android:layout_marginLeft="22dp"
+        android:minHeight="200dp"
+        android:minWidth="200dp" >
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/circleLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/circleLayout1"
+        android:layout_marginRight="22dp"
+        android:minHeight="200dp"
+        android:minWidth="200dp" >
+
+    </FrameLayout>
+
+</RelativeLayout>

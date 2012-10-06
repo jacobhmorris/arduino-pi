@@ -4,7 +4,7 @@ import piSerialHelper
 
 HOST = ''   # Symbolic name meaning all available interfaces
 
-PORT = 8888 # Arbitrary non-privileged port
+PORT = 8889 # Arbitrary non-privileged port
 serWrite = piSerialHelper.piSerial("/dev/ttyACM0", 19200, None, True)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
