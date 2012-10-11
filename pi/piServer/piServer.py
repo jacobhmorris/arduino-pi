@@ -48,7 +48,7 @@ while 1:
     try:
         
         try:
-            data = conn.recv(10)
+            data = conn.recv(128)
             print("received the following data: " + data)
             data = data.split(',')
             leftSpeed = data[0]
