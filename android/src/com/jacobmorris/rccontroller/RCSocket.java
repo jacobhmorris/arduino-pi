@@ -31,4 +31,7 @@ public class RCSocket {
 		}
 		   
 	}
+	public void close() throws IOException {
+		socket.close();
+	}
 }

@@ -42,17 +42,9 @@ except socket.error , msg:
     print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
     sys.exit()
 
-#print 'Socket bind complete'
-
-s.listen(10)
-#print 'Socket now listening'
-
+s.listen(0)
 while 1:
-    
-    #wait to accept a connection - blocking call
     conn, addr = s.accept()
-    #print 'Connected with ' + addr[0] + ':' + str(addr[1])
-    
     try:
         
         try:
@@ -71,10 +63,10 @@ while 1:
         except Exception, msg:
             print("Error sending data via serial: "+msg[0])
         
-        conn.close()
-        s.close()
+       
     except KeyboardInterrupt:
         print("Closing Connections")
         conn.close()
         s.close()
-
+conn.close()
+s.close()

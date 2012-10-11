@@ -259,19 +259,19 @@ public class MainActivity extends Activity {
 	  public class ClientThread implements Runnable {
 		 
 	        public void run() {
-		       
-		        	try{
-		        		
-		        		 while(connected){
-		        			 RCSocket rcSocket = new RCSocket("10.1.1.109", 8888);
-		        			 rcSocket.sendValues(motorSpeedFirst,motorSpeedSecond,motorDirectionFirst,motorDirectionSecond);
-		        		 }
-			    	}catch(IOException ioEx){
-			    		System.out.println("ERROR: "+ioEx.getMessage());
-			    		connected = false;
-			    	}
-		        
-        	
+	        	
+	        	
+	        	try{
+	        		
+	        		while(connected){
+	        			RCSocket rcSocket = new RCSocket("10.1.1.10", 8888);
+	        			rcSocket.sendValues(motorSpeedFirst,motorSpeedSecond,motorDirectionFirst,motorDirectionSecond);
+	        			rcSocket.close();
+	        		}
+		    	}catch(IOException ioEx){
+		    		System.out.println("ERROR: "+ioEx.getMessage());
+		    		connected = false;
+		    	}       	
 	        	
 	        }
 	    }
