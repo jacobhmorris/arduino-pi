@@ -29,12 +29,12 @@ if(args.DEVICE != None):
 if(args.BAUD != None):
     BAUD = args.BAUD   
 
-print("Starting Server [HOST="+HOST+"] [PORT="+PORT+"] [DEVICE="+DEVICE+"] [BAUD="+BAUD+"]")
+print("Starting Server [HOST="+HOST+"] [PORT="+str(PORT)+"] [DEVICE="+DEVICE+"] [BAUD="+str(BAUD)+"]")
 
 serWrite = piSerialHelper.piSerial(DEVICE, BAUD, True)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-print('Socket created on '+s.gethostbyname(s.gethostname()))
+print('Socket created on '+socket.gethostbyname(socket.gethostname()))
 
 try:
     s.bind((HOST, PORT))
