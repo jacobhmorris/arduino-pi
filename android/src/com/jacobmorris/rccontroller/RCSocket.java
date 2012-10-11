@@ -15,7 +15,7 @@ public class RCSocket {
 		this.ip = ip;
 		this.port = port;
 		socket = new Socket(ip, port);
-		socket.setSendBufferSize(1024);
+		socket.setSendBufferSize(10);
 		
 	}
 	public void sendValues(int leftSpeed, int rightSpeed, int leftDirection, int rightDirection) throws UnknownHostException, IOException {	

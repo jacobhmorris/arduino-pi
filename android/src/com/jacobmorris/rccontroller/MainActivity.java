@@ -32,8 +32,8 @@ import android.graphics.Paint;
 public class MainActivity extends Activity {
 	private Button doConnect;
 	boolean connected = false;
-	volatile int motorSpeedFirst;
-	volatile int motorSpeedSecond;
+	volatile int motorSpeedFirst; //left wheel
+	volatile int motorSpeedSecond; //right wheel
 	volatile int motorDirectionFirst; //0 = backwards, 1 = forwards
 	volatile int motorDirectionSecond; //0 = backwards, 1 = forwards
 
@@ -122,6 +122,9 @@ public class MainActivity extends Activity {
             	  	case MotionEvent.ACTION_MOVE : {
             	  		x1 = (int) FloatMath.floor(event.getX(0));
            	    		y1 = (int) FloatMath.floor(event.getY(0));
+           	    		
+           	    		int regionValueFirst = 0;
+           	    		int regionValueSecond = 0;
            	    		pointerRegionFirst = FindControlRegion(event.getX(0));
             	  		
            	    		if(event.getPointerCount() > 1){
@@ -135,10 +138,10 @@ public class MainActivity extends Activity {
            	    		
            	    		//hand touch co-ordinates to the appropriate function based on the control region the touch occurs in
            	    		if(pointerRegionFirst == ControlRegion.FIRST){		
-           	    			motorSpeedFirst(x1, y1);
+           	    			regionValueFirst = regionValueFirst(x1, y1);
            	    		}else{ //first finger is in the second control region
            	    			x1 = x1-xOffsetSecond; //correct the x value to represent the relative x position in this control region
-           	    			motorSpeedSecond(x1, y1);
+           	    			regionValueFirst = regionValueFirst(x1, y1);
            	    		}
            	    		System.out.print(x1 + " " + y1);
            	    		
@@ -147,14 +150,16 @@ public class MainActivity extends Activity {
            	    		if(pointerRegionFirst != pointerRegionSecond && pointerRegionSecond != ControlRegion.NONE){
            	    			if(pointerRegionSecond == ControlRegion.SECOND){
            	    				//x2 = x2-xOffsetSecond;  //correct the x value to represent the relative x position in this control region
-               	    			motorSpeedSecond(x2, y2);
+           	    				regionValueSecond = regionValueSecond(x2, y2);
                	    		}else{
                	    			x2 = x2-xOffsetSecond;  //correct the x value to represent the relative x position in this control region
-               	    			motorSpeedFirst(x2, y2);
+               	    			regionValueSecond = regionValueSecond(x2, y2);
                	    		}
            	    			System.out.print(" - pointer 2: "+ x2+" "+y2);
            	    		}
            	    		System.out.print("\n");
+           	    		
+           	    		calcMotorSpeeds(regionValueFirst, regionValueSecond);
            	    		
            	    		break;
         	  		}
@@ -185,28 +190,58 @@ public class MainActivity extends Activity {
 	public enum ControlRegion {
 		NONE, FIRST, SECOND
 	}
-	public void motorSpeedFirst(int x, int y){
+	
+	
+	
+	public int regionValueFirst(int x, int y){
 		int speedX = findRelativeControlValue(screenWidth/2, xMidpointFirst, x);
 		int speedY = findRelativeControlValue(screenHeight, yMidpointFirst, y);
-		System.out.println("realSpeed: "+Integer.toString(findRealSpeed(255, speedX, speedY)));
 		
-		if(speedY < 0){
-			speedY = speedY - (speedY*2);
+		return speedY;
+		
+    }
+    public int regionValueSecond(int x, int y){
+    	int speedX = findRelativeControlValue((screenWidth/2), xMidpointSecond-xOffsetSecond, x-xOffsetSecond);
+    	int speedY = findRelativeControlValue(screenHeight, yMidpointSecond, y); 
+    	
+    	return speedX;
+
+    }
+    
+    public void calcMotorSpeeds(int regionValueFirst, int regionValueSecond) {
+    	//regionFirst is the throttle, regionSecond the steering
+    	
+    	
+    	//first find the direction of the throttle
+   		if(regionValueFirst < 0){
+			regionValueFirst = regionValueFirst - (regionValueFirst*2); //invert the speed if it is negative
 			motorDirectionFirst = 0;
 		}else{
 			motorDirectionFirst = 1;
 		}
 		
-		motorSpeedFirst = speedY;
+		int motorSpeedLeft = regionValueFirst;
+		int motorSpeedRight = regionValueFirst;
+		//regionValueSecond will be a negative number when turning right
+		//logically, the right value should be subtracted from the left wheel's throttle, and vice versa
+		System.out.println(regionValueSecond);
+		if(regionValueSecond >= 0){ //turning left
+			motorSpeedRight = regionValueFirst - regionValueSecond; //slow down the right wheel
+			
+		}else{
+			motorSpeedLeft = regionValueFirst + regionValueSecond; //slow down the left wheel - using + as regionValueSecond is a negative number
+		}
 		
-    	System.out.println("motorSpeedFirst: "+ speedX + ", " + speedY);
+		//avoid negative values
+		if(motorSpeedLeft < 0){
+			motorSpeedLeft = 0;
+		}
+		if(motorSpeedRight < 0){
+			motorSpeedRight = 0;
+		}
+		motorSpeedFirst = motorSpeedLeft;
+		motorSpeedSecond = motorSpeedRight;
    
-    }
-    public int motorSpeedSecond(int x, int y){
-    	float speedX = findRelativeControlValue((screenWidth/2), xMidpointSecond-xOffsetSecond, x);
-    	float speedY = findRelativeControlValue(screenHeight, yMidpointSecond, y); 
-    //	System.out.println("motorSpeedSecond: "+ speedX + ", " + speedY);
-    	return 0;
     }
     
     //calculates a value between 0 and 100 in the negative or positive direction (-100 to 100), of and input point (int input) from a reference point (int referencePoint) within the defined bounds (controlBounds)
@@ -264,7 +299,7 @@ public class MainActivity extends Activity {
 	        	try{
 	        		
 	        		while(connected){
-	        			RCSocket rcSocket = new RCSocket("10.1.1.10", 8888);
+	        			RCSocket rcSocket = new RCSocket("10.1.1.109", 8888);
 	        			rcSocket.sendValues(motorSpeedFirst,motorSpeedSecond,motorDirectionFirst,motorDirectionSecond);
 	        			rcSocket.close();
 	        		}
