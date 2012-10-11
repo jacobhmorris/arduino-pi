@@ -2,7 +2,7 @@ import socket
 import sys
 import piSerialHelper
 import argparse
-
+import time
 parser = argparse.ArgumentParser(description='Desc.')
 parser.add_argument('-l', action='store', dest='HOST', help='The address to listen on')
 parser.add_argument('-p', action='store', dest='PORT', type=int, help='The port to listen on')
@@ -56,7 +56,7 @@ while 1:
     try:
         
         try:
-            data = conn.recv(4096)
+            data = conn.recv(1024)
             print("received the following data: " + data)
             data = data.split(',')
             leftSpeed = data[0]
@@ -70,7 +70,8 @@ while 1:
             serWrite.sendMotorValues(int(leftSpeed), int(rightSpeed), int(leftDirection), int(rightDirection))
         except Exception, msg:
             print("Error sending data via serial: "+msg[0])
-
+        
+        time.sleep(0.5)
     except KeyboardInterrupt:
         print("Closing Connections")
         conn.close()

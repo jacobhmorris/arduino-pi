@@ -261,8 +261,9 @@ public class MainActivity extends Activity {
 	        public void run() {
 		       
 		        	try{
-		        		RCSocket rcSocket = new RCSocket("10.1.1.109", 9999);
+		        		
 		        		 while(connected){
+		        			 RCSocket rcSocket = new RCSocket("10.1.1.109", 8899);
 		        			 rcSocket.sendValues(motorSpeedFirst,motorSpeedSecond,motorDirectionFirst,motorDirectionSecond);
 		        		 }
 			    	}catch(IOException ioEx){
