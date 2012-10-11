@@ -10,7 +10,7 @@ parser.add_argument('-d', action='store', dest='DEVICE', help='The serial device
 parser.add_argument('-b', action='store', dest='BAUD', type=int, help='The baud rate of the serial device to open')
 
 args = parser.parse_args()
-print(args)
+
 
 HOST = ''
 PORT = 8888
@@ -29,13 +29,13 @@ if(args.DEVICE != None):
 if(args.BAUD != None):
     BAUD = args.BAUD   
 
+print("Starting Server [HOST="+HOST+"] [PORT="+PORT+"] [DEVICE="+DEVICE+"] [BAUD="+BAUD+"]")
 
-    
 serWrite = piSerialHelper.piSerial(DEVICE, BAUD, True)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-print 'Socket created'
- 
+print('Socket created on '+s.gethostbyname(s.gethostname()))
+
 try:
     s.bind((HOST, PORT))
 except socket.error , msg:
