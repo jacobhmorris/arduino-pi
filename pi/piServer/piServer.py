@@ -71,7 +71,8 @@ while 1:
         except Exception, msg:
             print("Error sending data via serial: "+msg[0])
         
-        time.sleep(0.5)
+        conn.close()
+        s.close()
     except KeyboardInterrupt:
         print("Closing Connections")
         conn.close()
