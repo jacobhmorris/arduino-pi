@@ -5,9 +5,9 @@ class piSerial:
     def __init__(self,serialPort,serialBaud,useHex):
         self.serialPort = serialPort
         self.serialBaud = serialBaud
+        self.serialReady = False
         
         #set defaults if nothing provided
-        
         if(useHex != None):
             self.useHex = useHex
         else:
@@ -15,8 +15,10 @@ class piSerial:
         
         try:
             self.ser = serial.Serial(self.serialPort, self.serialBaud)
+            self.serialReady = True
         except Exception, msg:
             print("Error opening serial port: "+msg[0])
+            self.serialReady = False
         
         
     
@@ -33,4 +35,5 @@ class piSerial:
             self.ser.write('*')
             self.ser.write(str(leftSpeed) + str(rightSpeed) + str(leftDirection) + str(rightDirection))
 
-        
+    def isReady(self):
+        return self.serialReady

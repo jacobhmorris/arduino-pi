@@ -5,14 +5,19 @@ import java.net.*;
 import com.jacobmorris.*;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.R.integer;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.*;
@@ -30,13 +35,21 @@ import android.graphics.Paint;
 
 
 public class MainActivity extends Activity {
+	
+	public static final String PREF_FILE_NAME = "PrefFile";
+	
+	private String TARGET_IP;
+	
 	private Button doConnect;
 	boolean connected = false;
 	volatile int motorSpeedFirst; //left wheel
 	volatile int motorSpeedSecond; //right wheel
 	volatile int motorDirectionFirst; //0 = backwards, 1 = forwards
 	volatile int motorDirectionSecond; //0 = backwards, 1 = forwards
-
+	
+	
+	
+	
     private int screenWidth;
     private int screenHeight;
     private int xOffsetFirst;
@@ -46,11 +59,33 @@ public class MainActivity extends Activity {
     private int yMidpointFirst;
     private int xMidpointSecond;
     private int yMidpointSecond;
+    
+    
+    
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.activity_main, menu);
     	
+    	return true;
+    }
+    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        SharedPreferences preferences = getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE);
+        
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("ipAddress", "10.1.1.10"); // value to store
+        editor.commit();
+        
+        
+        String ipAddress = preferences.getString("ipAddress", "");
+        
+        System.out.println(ipAddress);
        
         motorSpeedFirst = 0;
         motorSpeedSecond = 0;
@@ -61,17 +96,7 @@ public class MainActivity extends Activity {
 
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         screenHeight = getWindowManager().getDefaultDisplay().getHeight();
-       // Rect screenRect = new Rect();
-        
-     /*   getWindow().getDecorView().getWindowVisibleDisplayFrame(screenRect);
-        int statusBarHeight = screenRect.top;
-        int titleBarHeight = getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop() - statusBarHeight;
-        screenHeight = screenRect.height()-titleBarHeight;*/
-        
-        
-        //screenWidth = screenRect.width()/2;
-        
-        //screenHeight = touchOverlay.getHeight();
+
         xOffsetFirst = 0;
         xOffsetSecond = screenWidth/2;
         
@@ -80,9 +105,7 @@ public class MainActivity extends Activity {
         xMidpointSecond = (screenWidth/4)+xOffsetSecond;
         yMidpointSecond = screenHeight/2;
         
-        //DrawMidpoint midpoint1 = new DrawMidpoint(this, xMidpointFirst, yMidpointFirst, 10);
-        //setContentView(midpoint1);
-        
+    
         System.out.println("xMidpointFirst: "+xMidpointFirst+", yMidpointFirst: "+yMidpointFirst+",xMidpointSecond: "+xMidpointSecond+",yMidpointSecond: "+yMidpointSecond);
 
         touchOverlay.setOnTouchListener(new View.OnTouchListener() {
@@ -171,14 +194,17 @@ public class MainActivity extends Activity {
         
         
         doConnect = (Button) findViewById(R.id.doConnect);  
-         
+        
+        doConnect.setText("Connect");
          doConnect.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				if(!connected){
 					connected = true;
+					 doConnect.setText("Disconnect");
 					 Thread cThread = new Thread(new ClientThread());
 		 		     cThread.start();
 				}else{
+					doConnect.setText("Connect");
 					connected= false;
 				}
 				
@@ -216,9 +242,12 @@ public class MainActivity extends Activity {
    		if(regionValueFirst < 0){
 			regionValueFirst = regionValueFirst - (regionValueFirst*2); //invert the speed if it is negative
 			motorDirectionFirst = 0;
+			motorDirectionSecond = 0;
 		}else{
 			motorDirectionFirst = 1;
+			motorDirectionSecond = 1;
 		}
+   		
 		
 		int motorSpeedLeft = regionValueFirst;
 		int motorSpeedRight = regionValueFirst;
@@ -226,10 +255,21 @@ public class MainActivity extends Activity {
 		//logically, the right value should be subtracted from the left wheel's throttle, and vice versa
 		System.out.println(regionValueSecond);
 		if(regionValueSecond >= 0){ //turning left
-			motorSpeedRight = regionValueFirst - regionValueSecond; //slow down the right wheel
-			
+			if(motorDirectionFirst == 1){
+				motorSpeedRight = regionValueFirst - regionValueSecond; //slow down the right wheel
+			}else{
+				//going backwards, slow down the opposite wheel for correct steering behaviour
+				motorSpeedLeft = regionValueFirst - regionValueSecond; //slow down the right wheel
+			}
+
 		}else{
-			motorSpeedLeft = regionValueFirst + regionValueSecond; //slow down the left wheel - using + as regionValueSecond is a negative number
+			if(motorDirectionSecond == 1){
+				motorSpeedLeft = regionValueFirst + regionValueSecond; //slow down the left wheel - using + as regionValueSecond is a negative number
+			}else{
+				//going backwards, slow down the opposite wheel for correct steering behaviour
+				motorSpeedRight = regionValueFirst - regionValueSecond; //slow down the right wheel
+			}
+			
 		}
 		
 		//avoid negative values
@@ -275,7 +315,7 @@ public class MainActivity extends Activity {
     	
     }
     
-    //find the section of the screen a touch is occuring in
+    //find the section of the screen a touch is occurring in
     public ControlRegion FindControlRegion(float x){
     	int xPos = (int) FloatMath.floor(x);
     	ControlRegion foundRegion;
@@ -289,24 +329,36 @@ public class MainActivity extends Activity {
     	return foundRegion;
     }
     
-    
+  
 	
 	  public class ClientThread implements Runnable {
 		 
 	        public void run() {
-	        	
-	        	
 	        	try{
-	        		
 	        		while(connected){
-	        			RCSocket rcSocket = new RCSocket("10.1.1.109", 8888);
+
+	        			RCSocket rcSocket = new RCSocket("10.1.1.10", 8888);
 	        			rcSocket.sendValues(motorSpeedFirst,motorSpeedSecond,motorDirectionFirst,motorDirectionSecond);
 	        			rcSocket.close();
+	        			Thread.sleep(500);
 	        		}
 		    	}catch(IOException ioEx){
+		    		
+		    	/*	Context context = getApplicationContext();
+		    		CharSequence text = "Could Not Connect To Server!";
+		    		int duration = Toast.LENGTH_SHORT;
+
+		    		Toast toast = Toast.makeText(context, text, duration);
+		    		toast.show();*/
+		    		
 		    		System.out.println("ERROR: "+ioEx.getMessage());
 		    		connected = false;
-		    	}       	
+		    		//doConnect.setText("Connect");
+		    		
+		    	} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}       	
 	        	
 	        }
 	    }
