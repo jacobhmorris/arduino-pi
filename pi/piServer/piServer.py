@@ -44,7 +44,7 @@ except socket.error , msg:
 
 s.listen(0)
 while 1:
-    threadlock.acquire()
+    #threadlock.acquire()
   #  conn, addr = s.accept()
    # s.setblocking(0)
     try:
