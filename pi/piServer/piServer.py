@@ -2,7 +2,7 @@ import socket
 import sys
 import piSerialHelper
 import argparse
-import time
+import thread
 parser = argparse.ArgumentParser(description='Desc.')
 parser.add_argument('-l', action='store', dest='HOST', help='The address to listen on')
 parser.add_argument('-p', action='store', dest='PORT', type=int, help='The port to listen on')
@@ -44,12 +44,16 @@ except socket.error , msg:
 
 s.listen(0)
 while 1:
-    conn, addr = s.accept()
+    threadlock.acquire()
+  #  conn, addr = s.accept()
+   # s.setblocking(0)
     try:
         
         try:
+            conn, addr = s.accept()
+            s.setblocking(0)
             data = conn.recv(128)
-            print("received the following data: " + data)
+            print("Motor Values [MS1],[MS2],[MD1],[MD2]: " + data)
             data = data.split(',')
             leftSpeed = data[0]
             rightSpeed = data[1]
