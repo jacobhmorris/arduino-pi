@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">RCController</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">RCPi</string>
+    <string name="network_connection_error">Could Not Connect To Server</string>
+    <string name="settings_connect">Connect</string>
+
+</resources>

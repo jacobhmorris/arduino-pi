@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RCPi</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="titleIpAddress">IP Address</string>
+    <string name="summaryIpAddress">The IP address of the server to connect to</string>
+    <string name="titlePort">Port</string>
+    <string name="summaryPort">The port of the server</string>
+    <string name="titlePrefs">Settings</string>
+    <string name="titleConnect">Connect</string>
+
+</resources>
