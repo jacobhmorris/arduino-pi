@@ -356,7 +356,7 @@ public class rccontroller extends Activity {
 	        		boolean yes = true;
 	        		while(yes){
 
-	        			RCSocket rcSocket = new RCSocket("10.1.1.10", 8888);
+	        			RCSocket rcSocket = new RCSocket("10.1.1.109", 8888);
 	        			rcSocket.sendValues(motorSpeedFirst,motorSpeedSecond,motorDirectionFirst,motorDirectionSecond);
 	        			rcSocket.close();
 	        			Thread.sleep(500);
@@ -389,7 +389,7 @@ public class rccontroller extends Activity {
 			while(connected){
 
     			
-    			try {
+				try {
     				RCSocket rcSocket = new RCSocket("10.1.1.10", 8888);
 					rcSocket.sendValues(motorSpeedFirst,motorSpeedSecond,motorDirectionFirst,motorDirectionSecond);
 					rcSocket.close();

@@ -62,6 +62,8 @@ while 1:
         try:
             if(serWrite.isReady()):
                 serWrite.sendMotorValues(int(leftSpeed), int(rightSpeed), int(leftDirection), int(rightDirection))
+            else:
+                print("Serial Not Ready")
         except Exception, msg:
             print("Error sending data via serial: "+str(msg[0]))
         
@@ -70,5 +72,6 @@ while 1:
         print("Closing Connections")
         conn.close()
         s.close()
+print("Exit loop")
 conn.close()
 s.close()

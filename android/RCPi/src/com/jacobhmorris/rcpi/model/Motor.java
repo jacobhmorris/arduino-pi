@@ -8,7 +8,7 @@ public final class Motor {
 		this.speed = speed;
 		this.direction = direction;
 	}
-	static enum Direction {
+	public static enum Direction {
 		BACKWARDS, FORWARDS
 	}
 	public int getSpeed() { return speed; }

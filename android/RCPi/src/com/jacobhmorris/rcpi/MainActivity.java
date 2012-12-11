@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 
 public class MainActivity extends Activity {
 	
-	
+	private InputController inputController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
 		
 		int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
-		InputController inputController= new InputController(screenWidth, screenHeight);
+		inputController= new InputController(this, screenWidth, screenHeight);
 		
 		FrameLayout touchOverlay = (FrameLayout) findViewById(R.id.touchOverlay);
 		touchOverlay.setOnTouchListener(inputController.getOnTouchListener());
@@ -41,6 +41,9 @@ public class MainActivity extends Activity {
 		switch(item.getItemId()) {
 		case R.id.itemPrefs:
 			startActivity(new Intent(this, PrefsActivity.class));
+			
+		case R.id.itemHandleConnection:
+			inputController.Connect();
 		break;
 			
 		}
