@@ -15,9 +15,9 @@ public final class Motor {
 	public Direction getDirection() { return direction; }
 	public int getIntDirection() {
 		if(direction == Direction.BACKWARDS) { 
-			return 0; 
-		}else {
 			return 1; 
+		}else {
+			return 0; 
 		}
 	}
 	public void setSpeed(int speed) { this.speed = speed; }

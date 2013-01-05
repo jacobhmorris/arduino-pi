@@ -8,29 +8,35 @@
 package com.jacobhmorris.rcpi;
 
 public final class R {
+    public static final class array {
+        public static final int entryValuesControlMethods=0x7f060001;
+        public static final int listEntriesControlMethods=0x7f060000;
+    }
     public static final class attr {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int itemHandleConnection=0x7f080002;
-        public static final int itemPrefs=0x7f080001;
-        public static final int touchOverlay=0x7f080000;
+        public static final int itemHandleConnection=0x7f090002;
+        public static final int itemPrefs=0x7f090001;
+        public static final int touchOverlay=0x7f090000;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
     }
     public static final class menu {
-        public static final int activity_main=0x7f070000;
+        public static final int activity_main=0x7f080000;
     }
     public static final class string {
         public static final int app_name=0x7f050000;
         public static final int hello_world=0x7f050001;
         public static final int menu_settings=0x7f050002;
+        public static final int summaryControlMethod=0x7f05000a;
         public static final int summaryIpAddress=0x7f050004;
         public static final int summaryPort=0x7f050006;
         public static final int titleConnect=0x7f050008;
+        public static final int titleControlMethod=0x7f050009;
         public static final int titleIpAddress=0x7f050003;
         public static final int titlePort=0x7f050005;
         public static final int titlePrefs=0x7f050007;
@@ -46,11 +52,11 @@ public final class R {
             backward-compatibility can go here.
         
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
+        public static final int AppTheme=0x7f070001;
     }
     public static final class xml {
         public static final int prefs=0x7f040000;

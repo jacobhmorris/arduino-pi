@@ -44,12 +44,10 @@ public class SocketHandler extends AsyncTask<String, Integer, String> {
 						
 					}
 				}
-				);
+			);
 		this.ipAddress = prefs.getString("prefIpAddress", "10.1.1.109");
         this.port = Integer.parseInt(prefs.getString("prefPort", "8888"));
         
-        
-        //Log.d(TAG, ipAddress);
 	}
 	
 	@Override
@@ -69,8 +67,8 @@ public class SocketHandler extends AsyncTask<String, Integer, String> {
 				while(on) {
 					rcSocket = new RCSocket(ipAddress, port);
 					//Log.d(TAG, Integer.toString(motorFirst.getSpeed()));
-					rcSocket.sendValues(motorFirst.getSpeed(),motorSecond.getSpeed(),motorSecond.getIntDirection(),motorSecond.getIntDirection());
-					Thread.sleep(500);
+					rcSocket.sendValues(motorFirst.getSpeed(),motorSecond.getSpeed(),motorFirst.getIntDirection(),motorSecond.getIntDirection());
+					Thread.sleep(300);
 				}
 				rcSocket.close();
 				

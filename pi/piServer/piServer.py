@@ -44,7 +44,10 @@ except socket.error , msg:
 
 s.listen(0)
 while 1:
-   
+    if(serWrite.isReady()):
+        serWrite.sendMotorValues(0, 0, 0, 0)
+    else:
+        print("Serial Not Ready")
     conn, addr = s.accept()
     try:
         #begin accepting and parsing data

@@ -39,12 +39,12 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
-		case R.id.itemPrefs:
-			startActivity(new Intent(this, PrefsActivity.class));
-			
-		case R.id.itemHandleConnection:
-			inputController.Connect();
-		break;
+			case R.id.itemPrefs:
+				startActivity(new Intent(this, PrefsActivity.class));
+				
+			case R.id.itemHandleConnection:
+				inputController.Connect();
+			break;
 			
 		}
 		return true;
